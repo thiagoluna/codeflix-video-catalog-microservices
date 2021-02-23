@@ -6,5 +6,4 @@ This project is being developed during "Modern and Scalable Applications with Mi
 [Code Education](https://code.education/)
 
 ## Microservice Video Catalog - Backend
-- Backend Microservice in Laravel 
-
+- Backend Microservice in Laravel

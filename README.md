@@ -19,7 +19,3 @@ This project is being developed during "Modern and Scalable Applications with Mi
 
 ## Authentication - Keycloak
 - Authentication between microservices with Keycloak
-
-```
-http://localhost:8000
-```
