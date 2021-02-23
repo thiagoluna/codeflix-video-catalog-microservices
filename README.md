@@ -8,7 +8,7 @@ This project is being developed during "Modern and Scalable Applications with Mi
 ## Microservices
 
 #### Video Catalog
-- Backend Microservice in Laravel - [Repository](https://github.com/thiagoluna/codeflix-video-catalog-microservice/tree/master/code-micro-videos)
+- Backend Microservice in Laravel - [Repository](https://github.com/thiagoluna/codeflix-video-catalog-microservices/tree/master/code-micro-videos)
 - Frontend Microservice in React
 
 #### Video Encoder
