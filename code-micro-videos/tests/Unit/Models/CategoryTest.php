@@ -1,9 +1,8 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Models;
 
 use App\Models\Category;
-use App\Models\Genre;
 use App\Models\Traits\Uuid;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -13,6 +12,15 @@ use PHPUnit\Framework\TestCase;
 class CategoryTest extends TestCase
 {
     use DatabaseMigrations;
+
+    private $category;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->category = new Category();
+    }
+
     /**
      * A basic unit test example.
      *
@@ -20,7 +28,6 @@ class CategoryTest extends TestCase
      */
     public function testFillable()
     {
-        //Genre::create(['name' => 'masculino']);
         $category = new Category();
           $this->assertEquals(
               ['name', 'description', 'is_active'],
@@ -35,28 +42,26 @@ class CategoryTest extends TestCase
         $this->assertEquals($traits, $categoryTraits);
     }
 
-    public function testCasts()
+    public function testCastsAttribute()
     {
-        $casts = ['id' => 'string'];
-        $category = new Category();
-        $this->assertEquals($casts, $category->getCasts());
+        $casts = ['id' => 'string', 'is_active' => 'boolean'];
+
+        $this->assertEquals($casts, $this->category->getCasts());
     }
 
     public function testIncrementing()
     {
-        $category = new Category();
-        $this->assertFalse($category->incrementing);  // mesma coisa do debaixo
-        //$this->assertEquals(false, $category->incrementing);
+        $this->assertFalse($this->category->incrementing);  // mesma coisa do debaixo
+        //$this->assertEquals(false, $this->category->incrementing);
     }
 
     public function testDates()
     {
-        $category = new Category();
         $dates = ['deleted_at', 'created_at', 'updated_at'];
         foreach ($dates as $date) {
-            $this->assertContains($date, $category->getDates());
+            $this->assertContains($date, $this->category->getDates());
         }
-        $this->assertCount(count($dates), $category->getDates());
+        $this->assertCount(count($dates), $this->category->getDates());
     }
 
 }
