@@ -9,10 +9,11 @@ use Illuminate\Support\Facades\Lang;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Tests\Traits\TestValidations;
 
 class GenreControllerTest extends TestCase
 {
-    use DatabaseMigrations;
+    use DatabaseMigrations, TestValidations;
 
     public function testIndex()
     {
@@ -35,26 +36,15 @@ class GenreControllerTest extends TestCase
             ->assertJson($genre->toArray());
     }
 
-    /**
-     * Validate Create with fields required e msg error
-     */
-    public function testCreateWithValidationRequired()
+    public function testInvalidationData()
     {
-        $response = $this->json('POST', route('genres.store', []));
+        $response = $this->json('POST', route('genres.store'), []);
+        $this->assertInvalidationRequired($response);
 
-        $this->assertWithValidationRequired($response);
-    }
-
-    /**
-     * Validate Create with Validation Max 255
-     */
-    public function testCreateWithValidationMax()
-    {
-        $response = $this->json('POST', route('genres.store',[
+        $response = $this->json('POST', route('genres.store'),[
             'name' => str_repeat('a', 256)
-        ]));
-
-        $this->assertWithValidationMax($response);
+        ]);
+        $this->assertInvalidationMax($response);
     }
 
     /**
@@ -147,28 +137,6 @@ class GenreControllerTest extends TestCase
         $this->assertWithValidationNullableMaxFields($response);
     }
 
-    /**
-     * @param TestResponse $response
-     * Methods for Create and Update
-     */
-    public function assertWithValidationRequired(TestResponse $response)
-    {
-        $response->AssertStatus(422)
-            ->assertJsonValidationErrors(['name'])
-            ->assertJsonFragment([
-                Lang::get('validation.required', ['attribute' => 'name'])
-            ]);
-    }
-
-    public function assertWithValidationMax(TestResponse $response)
-    {
-        $response->AssertStatus(422)
-            ->assertJsonValidationErrors(['name'])
-            ->assertJsonFragment([
-                Lang::get('validation.max.string', ['attribute' => 'name', 'max' => 255])
-            ]);
-    }
-
     public function assertWithValidationNullableMaxFields(TestResponse $response)
     {
         $response->AssertStatus(422)
@@ -189,6 +157,22 @@ class GenreControllerTest extends TestCase
             ->assertJsonFragment([
                 Lang::get('validation.boolean', ['attribute' => 'is active'])
             ]);
+    }
+
+    protected function assertInvalidationRequired(TestResponse $response)
+    {
+        $this->assertInvalidationFields($response, ['name'], 'required', []);
+        $response->assertJsonMissingValidationErrors(['is_active']);
+    }
+
+    public function assertInvalidationMax(TestResponse $response)
+    {
+        $this->assertInvalidationFields($response, ['name'], 'max.string', ['max' => 255]);
+    }
+
+    protected function assertInvalidationBoolean(TestResponse $response)
+    {
+        $this->assertInvalidationFields($response, ['is_active'], 'boolean');
     }
 
     /**
